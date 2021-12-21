@@ -18,8 +18,10 @@ import lombok.NoArgsConstructor;
   property = "tipo"
 )
 @JsonSubTypes(
-  @JsonSubTypes.Type(value = CrearApuestaNumeroDTO.class, name = "numero")
-  
+  {
+    @JsonSubTypes.Type(value = CrearApuestaNumeroDTO.class, name = "numero"),
+    @JsonSubTypes.Type(value = CrearApuestaColorDTO.class, name = "color")
+  }
 )
 public class CrearApuestaDTO {
 
