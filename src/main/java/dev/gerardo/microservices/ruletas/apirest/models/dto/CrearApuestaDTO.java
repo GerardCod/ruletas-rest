@@ -27,4 +27,11 @@ public class CrearApuestaDTO {
 
   @NotNull(message = "El monto no puede ser nulo")
   private Double monto;
+
+  @NotNull(message = "El id de la ruleta no puede ser nulo")
+  private Integer ruletaId;
+
+
+  @NotNull(message = "El id del jugador no puede ser nulo")
+  private Integer jugadorId;
 }

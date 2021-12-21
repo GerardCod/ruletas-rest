@@ -3,11 +3,7 @@ package dev.gerardo.microservices.ruletas.apirest.models.entities;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -23,6 +19,7 @@ import lombok.NoArgsConstructor;
 public class Jugador {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	@Column(nullable = false)
@@ -46,4 +43,16 @@ public class Jugador {
 	
 	@OneToMany
 	private List<Apuesta> apuestas;
+
+	@PrePersist
+	private void prePersist() {
+		saldo = 20000.00;
+		fechaCreacion = new Date();
+	}
+
+	@PreUpdate
+	private void preUpdate() {
+		fechaModifcacion = new Date();
+	}
+
 }

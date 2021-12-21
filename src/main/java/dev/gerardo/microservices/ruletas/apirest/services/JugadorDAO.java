@@ -13,4 +13,6 @@ public interface JugadorDAO {
 	Optional<Jugador> buscarPorId(Integer id);
 	
 	Optional<Jugador> actualizarJugador(Jugador jugadorEncontrado, Jugador jugadorActualizado);
+
+	Boolean revisarSaldoSuficiente(Jugador jugador, Double monto);
 }

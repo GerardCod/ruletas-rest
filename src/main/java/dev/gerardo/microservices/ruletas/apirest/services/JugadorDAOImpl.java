@@ -47,4 +47,9 @@ public class JugadorDAOImpl implements JugadorDAO {
 		return Optional.of(result);
 	}
 
+	@Override
+	public Boolean revisarSaldoSuficiente(Jugador jugador, Double monto) {
+		return (jugador.getSaldo() - monto) > 0;
+	}
+
 }
