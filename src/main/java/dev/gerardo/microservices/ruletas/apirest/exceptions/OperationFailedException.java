@@ -1,4 +1,4 @@
-package dev.gerardo.microservices.ruletas.apirest.controllers.exceptions;
+package dev.gerardo.microservices.ruletas.apirest.exceptions;
 
 public class OperationFailedException extends RuntimeException {
 

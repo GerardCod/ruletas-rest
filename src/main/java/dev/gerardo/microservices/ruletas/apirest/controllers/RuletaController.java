@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.gerardo.microservices.ruletas.apirest.controllers.exceptions.NotFoundException;
+import dev.gerardo.microservices.ruletas.apirest.exceptions.NotFoundException;
 import dev.gerardo.microservices.ruletas.apirest.models.dto.CrearApuestaDTO;
 import dev.gerardo.microservices.ruletas.apirest.models.entities.Ruleta;
 import dev.gerardo.microservices.ruletas.apirest.services.RuletaDAO;
