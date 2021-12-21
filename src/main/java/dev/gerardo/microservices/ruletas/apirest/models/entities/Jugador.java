@@ -41,7 +41,7 @@ public class Jugador {
 	@Column(name = "fecha_modificacionn")
 	private Date fechaModifcacion;
 	
-	@OneToMany
+	@OneToMany(mappedBy = "jugador", fetch = FetchType.LAZY)
 	private List<Apuesta> apuestas;
 
 	@PrePersist

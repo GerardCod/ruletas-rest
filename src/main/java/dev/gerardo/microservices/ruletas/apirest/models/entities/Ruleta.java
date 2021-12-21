@@ -3,14 +3,7 @@ package dev.gerardo.microservices.ruletas.apirest.models.entities;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -45,7 +38,7 @@ public class Ruleta {
 	@Column(nullable = false)
 	private Integer numeroMax;
 	
-	@OneToMany
+	@OneToMany(mappedBy = "ruleta", fetch = FetchType.LAZY)
 	private List<Apuesta> apuestas;
 	
 	@Column(nullable = false)

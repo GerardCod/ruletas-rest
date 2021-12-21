@@ -17,12 +17,7 @@ import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import dev.gerardo.microservices.ruletas.apirest.exceptions.NotFoundException;
 import dev.gerardo.microservices.ruletas.apirest.models.dto.CrearApuestaDTO;
@@ -120,6 +115,17 @@ public class RuletaController {
 		}
 
 		return ResponseEntity.ok(result.get().getApuestas());
+	}
+
+	@GetMapping
+	public ResponseEntity<List<Ruleta>> buscarTodas() {
+		Optional<List<Ruleta>> result = service.buscarTodas();
+
+		if (result.isEmpty()) {
+			throw new NotFoundException("No hay ruletas en el sistema");
+		}
+
+		return ResponseEntity.ok(result.get());
 	}
 
 }

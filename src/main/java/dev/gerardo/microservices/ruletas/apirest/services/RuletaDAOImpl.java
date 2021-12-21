@@ -1,5 +1,6 @@
 package dev.gerardo.microservices.ruletas.apirest.services;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -106,6 +107,12 @@ public class RuletaDAOImpl implements RuletaDAO {
 
 		jugadorRepository.save(jugador);
 		Apuesta result = apuestaRepository.save(apuesta);
+		return Optional.of(result);
+	}
+
+	@Override
+	public Optional<List<Ruleta>> buscarTodas() {
+		List<Ruleta> result = (List<Ruleta>) repository.findAll();
 		return Optional.of(result);
 	}
 

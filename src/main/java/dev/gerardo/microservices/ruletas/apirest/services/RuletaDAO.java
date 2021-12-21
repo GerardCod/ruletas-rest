@@ -1,5 +1,6 @@
 package dev.gerardo.microservices.ruletas.apirest.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import dev.gerardo.microservices.ruletas.apirest.models.dto.CrearApuestaColorDTO;
@@ -17,4 +18,5 @@ public interface RuletaDAO {
 	Boolean cerrarRuleta(Ruleta ruleta);
 	Optional<Apuesta> realizarApuestaNumero(Ruleta ruleta, Jugador jugador, CrearApuestaNumeroDTO entrada);
 	Optional<Apuesta> realizarApuestaColor(Ruleta ruleta, Jugador jugador, CrearApuestaColorDTO entrada);
+	Optional<List<Ruleta>> buscarTodas();
 }
