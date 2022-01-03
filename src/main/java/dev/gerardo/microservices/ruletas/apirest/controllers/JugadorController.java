@@ -1,9 +1,12 @@
 package dev.gerardo.microservices.ruletas.apirest.controllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,8 +29,11 @@ public class JugadorController {
 	@Autowired
 	private JugadorDAO service;
 	
+	@Value("${server.port}")
+	private Integer port;
+	
 	@PostMapping
-	public ResponseEntity<Jugador> crearJugador(@RequestBody Jugador jugador) {
+	public ResponseEntity<?> crearJugador(@RequestBody Jugador jugador) {
 		
 		Optional<Jugador> result = service.crear(jugador);
 		
@@ -35,33 +41,43 @@ public class JugadorController {
 			throw new OperationFailedException("No se pudo crear el jugador");
 		}
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(result.get());
+		Map<String, Object> response = new HashMap<>();
+		response.put("jugador", result.get());
+		response.put("source", port);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Jugador>> buscarTodos() {
+	public ResponseEntity<?> buscarTodos() {
 		Optional<List<Jugador>> result = service.listarJugadores();
 		
 		if (result.isEmpty()) {
 			throw new NotFoundException("No hay jugadores en el sistema");
 		}
 		
-		return ResponseEntity.ok(result.get());
+		Map<String, Object> response = new HashMap<>();
+		response.put("jugadores", result.get());
+		response.put("source", port);
+		return ResponseEntity.ok(response);
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Jugador> buscarPorId(@PathVariable Integer id) {
+	public ResponseEntity<?> buscarPorId(@PathVariable Integer id) {
 		Optional<Jugador> result = service.buscarPorId(id);
 	
 		if (result.isEmpty()) {
 			throw new NotFoundException("No hay un jugador con id " + id);
 		}
 		
-		return ResponseEntity.ok(result.get());
+		Map<String, Object> response = new HashMap<>();
+		response.put("jugador", result.get());
+		response.put("source", port);
+		
+		return ResponseEntity.ok(response);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Jugador> actualizarJugador(@PathVariable Integer id, @RequestBody Jugador jugador) {
+	public ResponseEntity<?> actualizarJugador(@PathVariable Integer id, @RequestBody Jugador jugador) {
 		Optional<Jugador> result = service.buscarPorId(id);
 		
 		if (result.isEmpty()) {
@@ -70,6 +86,9 @@ public class JugadorController {
 		
 		Optional<Jugador> resultUpdate = service.actualizarJugador(result.get(), jugador);
 		
-		return ResponseEntity.ok(resultUpdate.get());
+		Map<String, Object> response = new HashMap<>();
+		response.put("jugadorActualizado", resultUpdate.get());
+		response.put("source", port);
+		return ResponseEntity.ok(response);
 	}
 }

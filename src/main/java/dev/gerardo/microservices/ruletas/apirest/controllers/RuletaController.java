@@ -15,6 +15,7 @@ import dev.gerardo.microservices.ruletas.apirest.models.entities.Jugador;
 import dev.gerardo.microservices.ruletas.apirest.services.JugadorDAO;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,21 +34,32 @@ public class RuletaController {
 	@Autowired
 	private RuletaDAO service;
 
+
 	@Autowired
 	private JugadorDAO jugadorService;
-	
+
+	/**
+	 * Endpoint para crear una nueva ruleta.
+	 * @param ruleta Cuerpo de la petición para crear una nueva ruleta
+	 * @return ResponseEntity con el id de la ruleta creada.
+	 */
 	@PostMapping
-	public ResponseEntity<?> crearRuleta(@RequestBody Ruleta ruleta) {
+	public ResponseEntity<Map<String, String>> crearRuleta(@RequestBody Ruleta ruleta) {
 		Map<String, String> response = new HashMap<>();
 		Integer result = service.crearRuleta(ruleta);
 		
 		response.put("idCreado", result.toString());
-			
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
-	
+
+	/**
+	 * Endpoint para abrir una ruleta por id.
+	 * @param ruletaId Id numérico de la ruleta.
+	 * @return ResponseEntity con un mensaje de confirmación de la apertura de la ruleta.
+	 * @throws NotFoundException si no existe una ruleta con el id ingresado.
+	 */
 	@PutMapping("/abierta/{ruletaId}")
-	public ResponseEntity<?> abrirRuleta(@PathVariable Integer ruletaId) {
+	public ResponseEntity<Map<String, String>> abrirRuleta(@PathVariable Integer ruletaId) {
 		Optional<Ruleta> result = service.buscarRuletaPorId(ruletaId);
 	
 		if (result.isEmpty()) {
@@ -66,9 +78,16 @@ public class RuletaController {
 		
 		return ResponseEntity.ok(response);
 	}
-	
+
+	/**
+	 * Endpoint para realizar apuestas en las ruletas, ya sea por número o por color.
+	 * @param apuesta Cuerpo de la petición con la información de la apuesta.
+	 * @return ResponseEntity con la información del resultado de la apuesta.
+	 * @throws NotFoundException si no se encuentra una ruleta con el id ingresado.
+	 * @throws RuletaNotOpenedException si la ruleta es encontrada pero no está abierta aún.
+	 */
 	@PostMapping("/apuestas")
-	public ResponseEntity<?> realizarApuesta(@Valid @RequestBody CrearApuestaDTO apuesta) {
+	public ResponseEntity<Map<String, Object>> realizarApuesta(@Valid @RequestBody CrearApuestaDTO apuesta) {
 		Integer ruletaId = apuesta.getRuletaId();
 		Optional<Ruleta> ruleta = service.buscarRuletaPorId(ruletaId);
 
@@ -98,12 +117,22 @@ public class RuletaController {
 		} else {
 			apuestaOptional = service.realizarApuestaColor(ruleta.get(), jugador.get(), (CrearApuestaColorDTO) apuesta);
 		}
+		
+		Map<String, Object> response = new HashMap<>();
+		response.put("resultado", apuestaOptional.get());
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(apuestaOptional.get());
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
+	/**
+	 * Endpoint para cerrar una ruleta.
+	 * @param id Id numérico de la ruleta.
+	 * @return ResponseEntity con la información de las apuestas hechas en una ruleta.
+	 * @throws NotFoundException si no se encuentra una ruleta con el id ingresado.
+	 * @throws OperationFailedException si la ruleta ya está cerrada.
+	 */
 	@PutMapping("/cerrada/{id}")
-	public ResponseEntity<List<Apuesta>> cerrarRuleta(@PathVariable Integer id) {
+	public ResponseEntity<Map<String, Object>> cerrarRuleta(@PathVariable Integer id) {
 		Optional<Ruleta> result = service.buscarRuletaPorId(id);
 
 		if (result.isEmpty()) {
@@ -113,19 +142,28 @@ public class RuletaController {
 		if (!service.cerrarRuleta(result.get())) {
 			throw new OperationFailedException("No se pudo cerrar la ruleta porque ya estaba cerrada");
 		}
-
-		return ResponseEntity.ok(result.get().getApuestas());
+		
+		Map<String, Object> response = new HashMap<>();
+		response.put("apuestas", result.get().getApuestas());
+		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * Endpoint para listar todas las ruletas del sistema.
+	 * @return ResponseEntity con el listado de las ruletas.
+	 * @throws NotFoundException si no hay ruletas en el sistema.
+	 */
 	@GetMapping
-	public ResponseEntity<List<Ruleta>> buscarTodas() {
+	public ResponseEntity<Map<String, Object>> buscarTodas() {
 		Optional<List<Ruleta>> result = service.buscarTodas();
 
 		if (result.isEmpty()) {
 			throw new NotFoundException("No hay ruletas en el sistema");
 		}
-
-		return ResponseEntity.ok(result.get());
+		
+		Map<String, Object> response = new HashMap<>();
+		response.put("ruletas", result.get());
+		return ResponseEntity.ok(response);
 	}
 
 }
