@@ -34,7 +34,6 @@ public class RuletaController {
 	@Autowired
 	private RuletaDAO service;
 
-
 	@Autowired
 	private JugadorDAO jugadorService;
 
